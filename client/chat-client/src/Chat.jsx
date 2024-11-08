@@ -1,6 +1,8 @@
-// Chat.js
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import UsernameForm from './components/UsernameForm';
+import MessageList from './components/MessageList';
+import MessageForm from './components/MessageForm';
 
 const socket = io('http://localhost:4000', {
   reconnection: true,
@@ -92,31 +94,11 @@ const Chat = () => {
   return (
     <div>
       {!isConnected ? (
-        <form onSubmit={connectUser}>
-          <input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter your username..."
-          />
-          <button type="submit">Connect</button>
-        </form>
+        <UsernameForm username={username} setUsername={setUsername} connectUser={connectUser} />
       ) : (
         <div>
-          <div>
-            <ul>
-              {messages.map((msg, index) => (
-                <li key={index}>{msg}</li>
-              ))}
-            </ul>
-            <form onSubmit={sendMessage}>
-              <input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type your message..."
-              />
-              <button type="submit">Send</button>
-            </form>
-          </div>
+          <MessageList messages={messages} />
+          <MessageForm message={message} setMessage={setMessage} sendMessage={sendMessage} />
           <div><button onClick={disconnectUser}>Log out</button></div>
         </div>
       )}
@@ -124,4 +106,4 @@ const Chat = () => {
   );
 };
 
-export default Chat
+export default Chat;
