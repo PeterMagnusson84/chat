@@ -20,8 +20,26 @@ io.on('connection', (socket) => {
     io.emit('chat message', msg); // broadcast to all clients
   });
 
+  // Handle disconnection
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
+  });
+
+  // Handle reconnection attempts
+  socket.on('reconnect_attempt', () => {
+    console.log('User attempting to reconnect:', socket.id);
+  });
+
+  socket.on('reconnect', (attemptNumber) => {
+    console.log('User reconnected:', socket.id, 'Attempt:', attemptNumber);
+  });
+
+  socket.on('reconnect_error', (error) => {
+    console.log('Reconnection error:', error);
+  });
+
+  socket.on('reconnect_failed', () => {
+    console.log('Reconnection failed for user:', socket.id);
   });
 });
 
