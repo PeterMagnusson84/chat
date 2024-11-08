@@ -69,19 +69,25 @@ const Chat = () => {
   const connectUser = (e) => {
     e.preventDefault();
     if (username.trim()) {
-      console.log("connected user if", isConnected);
       setIsConnected(true);
+      socket.connect();
+    };
   };
-};
 
   const sendMessage = (e) => {
     e.preventDefault();
     if (message.trim()) {
       socket.emit('chat message', `${username}: ${message}`); // send the message with username
-      setMessage(''); // clear the input
+      setMessage('');
     }
   };
 
+  const disconnectUser = () => {
+    setIsConnected(false);
+    setUsername('');
+    setMessages([]);
+    socket.disconnect(); // Properly disconnect the client
+  };
 
   return (
     <div>
@@ -96,19 +102,22 @@ const Chat = () => {
         </form>
       ) : (
         <div>
-          <ul>
-            {messages.map((msg, index) => (
-              <li key={index}>{msg}</li>
-            ))}
-          </ul>
-          <form onSubmit={sendMessage}>
-            <input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Type your message..."
-            />
-            <button type="submit">Send</button>
-          </form>
+          <div>
+            <ul>
+              {messages.map((msg, index) => (
+                <li key={index}>{msg}</li>
+              ))}
+            </ul>
+            <form onSubmit={sendMessage}>
+              <input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type your message..."
+              />
+              <button type="submit">Send</button>
+            </form>
+          </div>
+          <div><button onClick={disconnectUser}>Log out</button></div>
         </div>
       )}
     </div>
