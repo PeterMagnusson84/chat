@@ -1,14 +1,24 @@
 import { messageFormProps } from '../interfaces/messageFormProps';
+import '../styles/messageFormStyle.css';
 
 const MessageForm = ({ message, setMessage, sendMessage }) => {
   return (
-    <form onSubmit={sendMessage}>
-      <input
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type your message..."
-      />
-      <button type="submit">Send</button>
+    <form onSubmit={sendMessage} >
+      <div className="chat-container">
+        <div className="chat-input-wrapper">
+          <div className="chat-input-group">
+            <input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type your message..."
+              className="chat-input"
+            />
+          </div>
+        </div>
+        <button type="submit" className="send-button">
+          <span className="send-button-text">Send</span>
+        </button>
+      </div>
     </form>
   );
 };
