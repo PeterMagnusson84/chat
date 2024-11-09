@@ -20,7 +20,11 @@ const Chat = () => {
   useEffect(() => {
     // Listen for incoming messages
     socket.on('chat message', (msg) => {
-      setMessages((prevMessages) => [...prevMessages, msg]);
+      setMessages((prevMessages) => [...prevMessages, {
+        text: msg.text,
+        username: msg.username,
+        timestamp: new Date().toISOString()
+      }]);
     });
 
     // Listen for disconnection event
@@ -79,7 +83,10 @@ const Chat = () => {
   const sendMessage = (e) => {
     e.preventDefault();
     if (message.trim()) {
-      socket.emit('chat message', `${username}: ${message}`); // send the message with username
+      socket.emit('chat message', {
+        username: username,
+        text: message
+      });
       setMessage('');
     }
   };
@@ -90,6 +97,8 @@ const Chat = () => {
     setMessages([]);
     socket.disconnect(); // Properly disconnect the client
   };
+
+  console.log("messages", messages);
 
   return (
     <div>
