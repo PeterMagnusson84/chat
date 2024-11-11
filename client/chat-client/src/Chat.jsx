@@ -105,7 +105,7 @@ const Chat = () => {
   const disconnectUser = () => {
     setIsConnected(false);
     setUsername('');
-    setMessages([]);
+    // setMessages([]);
     socket.disconnect(); // Properly disconnect the client
   };
 

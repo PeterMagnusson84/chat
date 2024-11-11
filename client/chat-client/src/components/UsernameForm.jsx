@@ -1,14 +1,24 @@
 import { UsernameFormProps } from '../interfaces/UsernameFormProps';
+import '../styles/userNameForm.css';
 
 const UsernameForm = ({ username, setUsername, connectUser }) => {
   return (
     <form onSubmit={connectUser}>
-      <input
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Enter your username..."
-      />
-      <button type="submit">Connect</button>
+      <div className="username-container">
+        <div className="username-input-wrapper">
+          <div className="username-input-group">
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username..."
+              className="username-input"
+            />
+            <div className='username-connect'>
+            <button className='username-connect-button' type="submit">Connect</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </form>
   );
 };
