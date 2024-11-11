@@ -18,13 +18,24 @@ const Chat = () => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    // Load messages from local storage
+    const savedMessages = localStorage.getItem('messages');
+    if (savedMessages) {
+      setMessages(JSON.parse(savedMessages));
+    }
+
     // Listen for incoming messages
     socket.on('chat message', (msg) => {
-      setMessages((prevMessages) => [...prevMessages, {
-        text: msg.text,
-        username: msg.username,
-        timestamp: new Date().toISOString()
-      }]);
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages, {
+          text: msg.text,
+          username: msg.username,
+          timestamp: new Date().toISOString()
+        }];
+        // Save messages to local storage
+        localStorage.setItem('messages', JSON.stringify(updatedMessages));
+        return updatedMessages;
+      });
     });
 
     // Listen for disconnection event
