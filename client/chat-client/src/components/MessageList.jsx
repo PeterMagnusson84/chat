@@ -1,7 +1,7 @@
 import { MessageListProps } from '../interfaces/MessageListProps';
 import '../styles/messageListStyle.css';
 
-const MessageList = ({ messages }) => {
+const MessageList = ({ messages = [] }) => {
   return (
     <ul className="message-list">
       {messages.map((msg, index) => (
