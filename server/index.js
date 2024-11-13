@@ -2,6 +2,8 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const connectDB = require('./db');
+const Message = require('./models/Messages');
 
 const app = express();
 const server = http.createServer(app);
@@ -12,12 +14,22 @@ const io = new Server(server, {
   }
 });
 
+// Connect to MongoDB
+connectDB();
+
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
+  // Send existing messages to the client
+  Message.find().then(messages => {
+    socket.emit('init', messages);
+  });
+
   // Handle receiving a message and broadcasting it
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg); // broadcast to all clients
+  socket.on('chat message', async (msg) => {
+    const message = new Message(msg);
+    await message.save();
+    io.emit('chat message', msg);
   });
 
   // Handle disconnection
