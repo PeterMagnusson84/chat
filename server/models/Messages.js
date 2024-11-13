@@ -15,4 +15,7 @@ const MessageSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Messages', MessageSchema);
+// Specify the collection name as 'Messages'
+const Message = mongoose.model('Message', MessageSchema, 'Messages');
+
+module.exports = Message;
