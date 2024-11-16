@@ -15,6 +15,7 @@ const Chat = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState('');
+  const [room, setRoom] = useState('');
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
@@ -86,8 +87,10 @@ const Chat = () => {
 
   const connectUser = (e) => {
     e.preventDefault();
-    if (username.trim()) {
+    if (username.trim() && room.trim()) {
       setIsConnected(true);
+      setMessages([]); // Clear messages when joining a new room
+      socket.emit('join room', room);
       socket.connect();
     };
   };
@@ -97,7 +100,8 @@ const Chat = () => {
     if (message.trim()) {
       socket.emit('chat message', {
         username: username,
-        text: message
+        text: message,
+        room: room,
       });
       setMessage('');
     }
@@ -106,7 +110,8 @@ const Chat = () => {
   const disconnectUser = () => {
     setIsConnected(false);
     setUsername('');
-    // setMessages([]);
+    setRoom('');
+    setMessages([]);
     socket.disconnect(); // Properly disconnect the client
   };
 
@@ -115,7 +120,14 @@ const Chat = () => {
   return (
     <div>
       {!isConnected ? (
-        <UsernameForm username={username} setUsername={setUsername} connectUser={connectUser} />
+        <div>
+          <UsernameForm username={username} setUsername={setUsername} connectUser={connectUser} />
+          <input
+              value={room}
+              onChange={(e) => setRoom(e.target.value)}
+              placeholder="Enter room name..."
+            />
+        </div>
       ) : (
         <div>
           <MessageList messages={messages} />
