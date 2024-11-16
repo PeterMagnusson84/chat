@@ -1,4 +1,4 @@
-import { UsernameFormProps } from '../interfaces/UsernameFormProps';
+import { UsernameFormProps } from '../PropTypes/UsernameFormProps';
 import '../styles/userNameForm.css';
 
 const UsernameForm = ({ username, setUsername, connectUser }) => {

@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import UsernameForm from './components/UsernameForm';
 import MessageList from './components/MessageList';
 import MessageForm from './components/MessageForm';
+import RoomSelect from './components/RoomSelect';
 
 const socket = io('http://localhost:4000', {
   reconnection: true,
@@ -16,7 +17,7 @@ const Chat = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState('');
 
-  //Create endpoint for rooms
+  //TODO: Create endpoint to get rooms
   const [rooms] = useState([
     { id: '6738d69484901ad4464b83fa', name: 'Room 1' },
     { id: '6738de2a84901ad4464b840a', name: 'Room 2' }
@@ -85,14 +86,7 @@ const Chat = () => {
       {!isConnected ? (
         <div>
           <UsernameForm username={username} setUsername={setUsername} connectUser={connectUser} />
-          <select id="room-select" value={selectedRoom} onChange={handleRoomSelect}>
-            <option value="">--Please choose a room--</option>
-            {rooms.map((room) => (
-              <option key={room.id} value={room.id}>
-                {room.name}
-              </option>
-            ))}
-          </select>
+          <RoomSelect selectedRoom={selectedRoom} handleRoomSelect={handleRoomSelect} rooms={rooms} />
         </div>
       ) : (
         <div>

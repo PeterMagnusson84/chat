@@ -1,4 +1,4 @@
-import { MessageListProps } from '../interfaces/MessageListProps';
+import { MessageListProps } from '../PropTypes/MessageListProps';
 import '../styles/messageListStyle.css';
 
 const MessageList = ({ messages }) => {

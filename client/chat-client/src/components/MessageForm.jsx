@@ -1,4 +1,4 @@
-import { messageFormProps } from '../interfaces/messageFormProps';
+import { messageFormProps } from '../PropTypes/messageFormProps';
 import '../styles/messageFormStyle.css';
 
 const MessageForm = ({ message, setMessage, sendMessage }) => {
