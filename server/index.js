@@ -1,4 +1,3 @@
-// index.js
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -9,13 +8,12 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // allow requests from the React app
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"]
   }
 });
 
-// Connect to MongoDB
-connectDB();
+connectDB(); // Connect to MongoDB
 
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
@@ -37,23 +35,6 @@ io.on('connection', (socket) => {
   // Handle disconnection
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
-  });
-
-  // Handle reconnection attempts
-  socket.on('reconnect_attempt', () => {
-    console.log('User attempting to reconnect:', socket.id);
-  });
-
-  socket.on('reconnect', (attemptNumber) => {
-    console.log('User reconnected:', socket.id, 'Attempt:', attemptNumber);
-  });
-
-  socket.on('reconnect_error', (error) => {
-    console.log('Reconnection error:', error);
-  });
-
-  socket.on('reconnect_failed', () => {
-    console.log('Reconnection failed for user:', socket.id);
   });
 });
 

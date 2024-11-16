@@ -6,9 +6,7 @@ import MessageForm from './components/MessageForm';
 
 const socket = io('http://localhost:4000', {
   reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-  reconnectionDelayMax: 5000,
+  reconnectionAttempts: Infinity
 }); // connect to the server
 
 const Chat = () => {
@@ -27,22 +25,12 @@ const Chat = () => {
   useEffect(() => {
     // Load messages from the server
     socket.on('init', (messages) => {
-      // Ensure each message has a timestamp
-      const updatedMessages = messages.map(msg => ({
-        ...msg,
-        timestamp: msg.timestamp || new Date().toISOString()
-      }));
-      setMessages(updatedMessages);
+      setMessages(messages);
     });
 
     // Listen for incoming messages
     socket.on('chat message', (msg) => {
-      // Ensure the new message has a timestamp
-      const updatedMsg = {
-        ...msg,
-        timestamp: msg.timestamp || new Date().toISOString()
-      };
-      setMessages((prevMessages) => [...prevMessages, updatedMsg]);
+      setMessages((prevMessages) => [...prevMessages, msg]);
     });
 
     // Listen for disconnection event
@@ -50,44 +38,11 @@ const Chat = () => {
       console.log('Disconnected from server');
     });
 
-    // Listen for reconnect event
-    socket.on('reconnect', (attemptNumber) => {
-      console.log('reconnect to server, attempt:', attemptNumber);
-    });
-
-    // Listen for reconnect attempt event
-    socket.on('reconnect_attempt', () => {
-      console.log('Attempting to reconnect...');
-    });
-
-    // Add additional logging for debugging
-    socket.on('connect', () => {
-      console.log('Connected to server');
-    });
-
-    socket.on('connect_error', (error) => {
-      console.log('Connection error:', error);
-    });
-
-    socket.on('reconnect_error', (error) => {
-      console.log('Reconnection error:', error);
-    });
-
-    socket.on('reconnect_failed', () => {
-      console.log('Reconnection failed');
-    });
-
     // Clean up the socket connection on component unmount
     return () => {
       socket.off('init');
       socket.off('chat message');
       socket.off('disconnect');
-      socket.off('reconnect');
-      socket.off('reconnect_attempt');
-      socket.off('connect');
-      socket.off('connect_error');
-      socket.off('reconnect_error');
-      socket.off('reconnect_failed');
     };
   }, []);
 
@@ -110,6 +65,7 @@ const Chat = () => {
       socket.emit('chat message', {
         username: username,
         text: message,
+        timestamp: new Date().toISOString(),
         room: selectedRoom, // Include the room ID
       });
       setMessage('');
@@ -123,7 +79,6 @@ const Chat = () => {
   };
 
   console.log("messages", messages);
-  console.log("selectedRoom", selectedRoom);
 
   return (
     <div>
