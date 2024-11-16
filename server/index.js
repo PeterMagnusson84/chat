@@ -20,6 +20,10 @@ connectDB();
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
+  socket.on('join room', (room) => {
+    socket.join(room);
+  });
+
   // Send existing messages to the client
   Message.find().then(messages => {
     socket.emit('init', messages);
@@ -29,7 +33,7 @@ io.on('connection', (socket) => {
   socket.on('chat message', async (msg) => {
     const message = new Message(msg);
     await message.save();
-    io.emit('chat message', msg);
+    io.to(msg.room).emit('chat message', msg);
   });
 
   // Handle disconnection

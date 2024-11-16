@@ -16,6 +16,12 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState('');
   const [isConnected, setIsConnected] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState('');
+
+  const [rooms] = useState([
+    { id: '6738d69484901ad4464b83fa', name: 'Room 1' },
+    { id: '6738de2a84901ad4464b840a', name: 'Room 2' }
+  ]);
 
   useEffect(() => {
     // Load messages from the server
@@ -84,11 +90,16 @@ const Chat = () => {
     };
   }, []);
 
+  const handleRoomSelect = (event) => {
+    setSelectedRoom(event.target.value);
+  };
+
   const connectUser = (e) => {
     e.preventDefault();
     if (username.trim()) {
       setIsConnected(true);
       socket.connect();
+      socket.emit('join room', selectedRoom); // Emit an event to join the room
     };
   };
 
@@ -97,7 +108,8 @@ const Chat = () => {
     if (message.trim()) {
       socket.emit('chat message', {
         username: username,
-        text: message
+        text: message,
+        room: selectedRoom, // Include the room ID
       });
       setMessage('');
     }
@@ -106,16 +118,26 @@ const Chat = () => {
   const disconnectUser = () => {
     setIsConnected(false);
     setUsername('');
-    // setMessages([]);
     socket.disconnect(); // Properly disconnect the client
   };
 
   console.log("messages", messages);
+  console.log("selectedRoom", selectedRoom);
 
   return (
     <div>
       {!isConnected ? (
-        <UsernameForm username={username} setUsername={setUsername} connectUser={connectUser} />
+        <div>
+          <UsernameForm username={username} setUsername={setUsername} connectUser={connectUser} />
+          <select id="room-select" value={selectedRoom} onChange={handleRoomSelect}>
+            <option value="">--Please choose a room--</option>
+            {rooms.map((room) => (
+              <option key={room.id} value={room.id}>
+                {room.name}
+              </option>
+            ))}
+          </select>
+        </div>
       ) : (
         <div>
           <MessageList messages={messages} />
