@@ -20,12 +20,10 @@ connectDB();
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
-  socket.on('join room', (room) => {
+  socket.on('join room', async (room) => {
     socket.join(room);
-  });
-
-  // Send existing messages to the client
-  Message.find().then(messages => {
+    // Send existing messages for the room to the client
+    const messages = await Message.find({ room });
     socket.emit('init', messages);
   });
 

@@ -18,6 +18,7 @@ const Chat = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState('');
 
+  //Create endpoint for rooms
   const [rooms] = useState([
     { id: '6738d69484901ad4464b83fa', name: 'Room 1' },
     { id: '6738de2a84901ad4464b840a', name: 'Room 2' }
@@ -96,7 +97,7 @@ const Chat = () => {
 
   const connectUser = (e) => {
     e.preventDefault();
-    if (username.trim()) {
+    if (username.trim() && selectedRoom) {
       setIsConnected(true);
       socket.connect();
       socket.emit('join room', selectedRoom); // Emit an event to join the room
